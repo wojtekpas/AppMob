@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:text="Nazwa produktu"
+        android:ems="10"
+        android:id="@+id/chosenProductET"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="0.08" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/curCountET"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="0.08" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberSigned"
+        android:text="0"
+        android:ems="10"
+        android:id="@+id/diffCountET"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="0.08"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Zaktualizuj"
+        android:id="@+id/updateBt"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="0.08" />
+
+    <Button
+        android:layout_width="387dp"
+        android:layout_height="wrap_content"
+        android:text="Anuluj"
+        android:id="@+id/cancelBt"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="0.04" />
+
+    <Button
+        android:layout_width="404dp"
+        android:layout_height="wrap_content"
+        android:text="Usuń produkt"
+        android:id="@+id/removeBt"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="0.08" />
+</LinearLayout>
