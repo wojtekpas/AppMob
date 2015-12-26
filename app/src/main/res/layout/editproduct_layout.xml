@@ -56,4 +56,10 @@
         android:id="@+id/removeBt"
         android:layout_gravity="center_horizontal"
         android:layout_weight="0.08" />
+    <ListView
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:layout_width="match_parent"
+        android:layout_height="365dp"
+        android:id="@+id/usersLV" />
 </LinearLayout>

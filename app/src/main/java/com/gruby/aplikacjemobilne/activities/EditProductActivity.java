@@ -3,14 +3,17 @@ package com.gruby.aplikacjemobilne.activities;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 
-import com.gruby.aplikacjemobilne.communication.Client;
-import com.gruby.aplikacjemobilne.entities.Product;
 import com.gruby.aplikacjemobilne.R;
-import com.gruby.aplikacjemobilne.communication.ResponseListener;
+import com.gruby.aplikacjemobilne.entities.Product;
 import com.gruby.aplikacjemobilne.entities.User;
+
+import java.util.ArrayList;
 
 /**
  * Created by Gruby on 2015-11-09.
@@ -25,10 +28,28 @@ public class EditProductActivity extends Activity {
     Button removeBt;
     Product product;
 
+    ListView usersLV;
+    ArrayList<String> listItems;
+    ArrayAdapter<String> adapter;
+    ArrayList<User> users;
+    ArrayList<User> selectedUsers;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.editproduct_layout);
+
+        usersLV = (ListView) findViewById(R.id.usersLV);
+
+        listItems = new ArrayList<>();
+        users = new ArrayList<>();
+
+        adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_list_item_1,
+                listItems);
+
+        usersLV.setAdapter(adapter);
+        selectedUsers = new ArrayList<>();
 
         chosenProductET = (EditText) findViewById(R.id.chosenProductET);
         curCountET = (EditText) findViewById(R.id.curCountET);
@@ -66,10 +87,17 @@ public class EditProductActivity extends Activity {
                 Remove();
             }
         });
+
+        usersLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                User u = users.get(position);
+                SelectUser(u);
+            }
+        });
     }
 
-    public void Update()
-    {
+    public void Update() {
         int diff = 0;
 
         if(diffCountET.getText() != null && diffCountET.getText().equals("") == false){
@@ -82,10 +110,17 @@ public class EditProductActivity extends Activity {
         finish();
     }
 
-    public void Remove()
-    {
+    public void Remove() {
         product.wasRemoved = true;
         User.db.updateProduct(product);
         finish();
+    }
+
+    public void SelectUser(User u){
+        if(selectedUsers.contains(u)){
+            selectedUsers.remove(u);
+        } else {
+            selectedUsers.add(u);
+        }
     }
 }
