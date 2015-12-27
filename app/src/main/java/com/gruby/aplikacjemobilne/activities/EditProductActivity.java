@@ -49,7 +49,14 @@ public class EditProductActivity extends Activity {
                 listItems);
 
         usersLV.setAdapter(adapter);
+
         selectedUsers = new ArrayList<>();
+
+        users = User.db.getUsers();
+
+        for(User u: users){
+            listItems.add(u.login);
+        }
 
         chosenProductET = (EditText) findViewById(R.id.chosenProductET);
         curCountET = (EditText) findViewById(R.id.curCountET);

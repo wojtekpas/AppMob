@@ -6,7 +6,7 @@
 
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:inputType="textPersonName"
         android:text="Nazwa produktu"
         android:ems="10"
@@ -16,7 +16,7 @@
 
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:inputType="number"
         android:ems="10"
         android:id="@+id/curCountET"
@@ -25,7 +25,7 @@
 
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:inputType="numberSigned"
         android:text="0"
         android:ems="10"
@@ -35,7 +35,7 @@
 
     <Button
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:text="Zaktualizuj"
         android:id="@+id/updateBt"
         android:layout_gravity="center_horizontal"
@@ -43,7 +43,7 @@
 
     <Button
         android:layout_width="387dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:text="Anuluj"
         android:id="@+id/cancelBt"
         android:layout_gravity="center_horizontal"
@@ -51,7 +51,7 @@
 
     <Button
         android:layout_width="404dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:text="Usuń produkt"
         android:id="@+id/removeBt"
         android:layout_gravity="center_horizontal"
@@ -60,6 +60,6 @@
         android:minWidth="25px"
         android:minHeight="25px"
         android:layout_width="match_parent"
-        android:layout_height="365dp"
+        android:layout_height="144dp"
         android:id="@+id/usersLV" />
 </LinearLayout>
