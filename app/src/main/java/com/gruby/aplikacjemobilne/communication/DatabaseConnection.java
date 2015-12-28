@@ -102,8 +102,6 @@ public class DatabaseConnection extends SQLiteOpenHelper {
         if(id == 0)
             id = getMaxUserId() + 1;
 
-        System.out.println("userID = " + id);
-
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(USERS_COLUMN_ID, id);
@@ -120,8 +118,6 @@ public class DatabaseConnection extends SQLiteOpenHelper {
 
         if(id == 0)
             id = getMaxProductId() + 1;
-
-        System.out.println("id = " + id);
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -168,7 +164,6 @@ public class DatabaseConnection extends SQLiteOpenHelper {
         contentValues.put(PRODUCTS_COLUMN_VERSION, version);
         contentValues.put(PRODUCTS_COLUMN_WAS_CREATED, convertBToS(wasCreated));
         contentValues.put(PRODUCTS_COLUMN_WAS_REMOVED, convertBToS(wasRemoved));
-        //System.out.println("update: " + convertBToS(wasRemoved));
         contentValues.put(PRODUCTS_COLUMN_USER_ID, User.loggedUser.id);
         db.update(PRODUCTS_TABLE_NAME, contentValues, PRODUCTS_COLUMN_ID + " = ? ", new String[]{Integer.toString(id)});
     }
@@ -189,7 +184,6 @@ public class DatabaseConnection extends SQLiteOpenHelper {
                 new String[]{Integer.toString(pid)});
         int c2 = getSharesList().size();
         int diff = c2 - c1;
-        System.out.println(c1 + " -> " + c2 + " ( " + diff + " )");
     }
 
     public ArrayList<User> getUsers()
@@ -302,9 +296,6 @@ public class DatabaseConnection extends SQLiteOpenHelper {
             int pid = Integer.parseInt(res.getString(res.getColumnIndex(SHARES_COLUMN_PRODUCT_ID)));
             int uid = Integer.parseInt(res.getString(res.getColumnIndex(SHARES_COLUMN_USER_ID)));
 
-            System.out.println("id = " + id);
-            System.out.println("pid = " + pid);
-            System.out.println("uid = " + uid);
             s = new Share(id, pid, uid);
             sharesList.add(s);
             res.moveToNext();
@@ -323,7 +314,6 @@ public class DatabaseConnection extends SQLiteOpenHelper {
                 shares.add(s);
         }
 
-        System.out.println("size shares = " + shares.size());
         return shares;
     }
 
@@ -335,9 +325,7 @@ public class DatabaseConnection extends SQLiteOpenHelper {
         users.remove(User.loggedUser);
 
         for(User u: users) {
-            System.out.println(u.login);
             for(Share s: shares){
-                System.out.println("   :" + s.user.login);
                 if (s.user.id == u.id){
                     if(usersToRemove.contains(u) == false){
                         usersToRemove.add(u);
@@ -378,7 +366,6 @@ public class DatabaseConnection extends SQLiteOpenHelper {
             p.version = Integer.parseInt(res.getString(res.getColumnIndex(PRODUCTS_COLUMN_VERSION)));
             p.wasCreated = convertSToB(res.getString(res.getColumnIndex(PRODUCTS_COLUMN_WAS_CREATED)));
             p.wasRemoved = convertSToB(res.getString(res.getColumnIndex(PRODUCTS_COLUMN_WAS_REMOVED)));
-            //System.out.println(p.getName() + " - " + p.wasRemoved);
             p.user = User.loggedUser;
             productsList.add(p);
             res.moveToNext();
@@ -406,12 +393,10 @@ public class DatabaseConnection extends SQLiteOpenHelper {
             p.version = Integer.parseInt(res.getString(res.getColumnIndex(PRODUCTS_COLUMN_VERSION)));
             p.wasCreated = convertSToB(res.getString(res.getColumnIndex(PRODUCTS_COLUMN_WAS_CREATED)));
             p.wasRemoved = convertSToB(res.getString(res.getColumnIndex(PRODUCTS_COLUMN_WAS_REMOVED)));
-            //System.out.println(p.getName() + " - " + p.wasRemoved);
             p.user = User.loggedUser;
             productsList.add(p);
             res.moveToNext();
         }
-        System.out.println("size products = " + productsList.size());
         return productsList;
     }
 
@@ -420,7 +405,7 @@ public class DatabaseConnection extends SQLiteOpenHelper {
             if(id == p.id)
                 return p;
         }
-        System.out.println("didn't find product with id = " + id);
+        System.out.println("WARNING: didn't find product with id = " + id);
         return null;
     }
 
@@ -479,7 +464,6 @@ public class DatabaseConnection extends SQLiteOpenHelper {
     {
         printUsers();
         printProducts();
-        printShares();
     }
 
     public void printUsers(){
@@ -494,9 +478,5 @@ public class DatabaseConnection extends SQLiteOpenHelper {
         for(Product p: getAllProductsList()){
             System.out.println("id: " + p.id + " - name : " + p.getName());
         }
-    }
-
-    public void printShares(){
-        System.out.println("---shares---");
     }
 }

@@ -70,7 +70,6 @@ public class EditProductActivity extends Activity {
         usersLV.setAdapter(adapter);
 
         selectedUsers = new ArrayList<>();
-        System.out.println("product: " + product + " id: " + product.id + " name: " + product.getName());
         users = User.db.getPossibleUsers(product);
 
         for(User u: users){
