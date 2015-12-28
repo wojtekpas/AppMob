@@ -80,11 +80,12 @@ public class ProductActivity extends Activity implements ResponseListener {
         });
 
         RefreshProductsList();
+        User.db.printTables();
     }
 
     public void RefreshProductsList()
     {
-        ArrayList<Product> productsInDb = User.db.getProductsList();
+        ArrayList<Product> productsInDb = User.db.getProductsListForLoggedUser();
         products = new ArrayList<>();
         for(Product p: productsInDb) {
             if(p.wasRemoved == false)
@@ -98,8 +99,9 @@ public class ProductActivity extends Activity implements ResponseListener {
         adapter.clear();
 
         for(Product p: products) {
-            adapter.add(p.getName() + " - " + p.getCurrentCount());
+            adapter.add("id - " + p.id + " - " + p.getName() + " - " + p.getCurrentCount());
         }
+        adapter.notifyDataSetChanged();
     }
 
     public void AddProduct()
@@ -121,7 +123,7 @@ public class ProductActivity extends Activity implements ResponseListener {
     }
 
     private void UpdateDuringSync(){
-        numberOfProducts = User.db.getProductsList().size();
+        numberOfProducts = User.db.getProductsListForLoggedUser().size();
         numberOfSyncProducts = 0;
 
         if(numberOfProducts == 0) {
@@ -129,7 +131,7 @@ public class ProductActivity extends Activity implements ResponseListener {
             return;
         }
 
-        for(Product p: User.db.getProductsList()) {
+        for(Product p: User.db.getProductsListForLoggedUser()) {
             if(p.wasRemoved == false && p.wasCreated == false && p.getDiff() == 0) {
                 numberOfSyncProducts++;
             }else if(p.wasRemoved) {
@@ -151,8 +153,8 @@ public class ProductActivity extends Activity implements ResponseListener {
     }
 
     private void DownloadDuringSync(){
-        if(User.db.getProductsList().size() > 0) {
-            for (Product p : User.db.getProductsList()) {
+        if(User.db.getProductsListForLoggedUser().size() > 0) {
+            for (Product p : User.db.getProductsListForLoggedUser()) {
                 User.db.deleteProduct(p);
             }
         }
@@ -185,13 +187,12 @@ public class ProductActivity extends Activity implements ResponseListener {
         if(productsOnServer.size() > 0) {
             for (Product p : productsOnServer) {
                 if(p.wasRemoved == false) {
-                    products.add(p);
                     User.db.insertProduct(p);
                 }
             }
         }
 
-        SetProductsList();
+        RefreshProductsList();
     }
 
     @Override

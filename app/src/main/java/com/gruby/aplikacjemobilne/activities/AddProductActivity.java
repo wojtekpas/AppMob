@@ -6,10 +6,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.gruby.aplikacjemobilne.communication.Client;
-import com.gruby.aplikacjemobilne.entities.Product;
 import com.gruby.aplikacjemobilne.R;
-import com.gruby.aplikacjemobilne.communication.ResponseListener;
+import com.gruby.aplikacjemobilne.entities.Product;
 import com.gruby.aplikacjemobilne.entities.User;
 
 /**
@@ -54,11 +52,12 @@ public class AddProductActivity extends Activity {
                     User.db.updateProduct(product.id, product.getName(),
                             product.getCount(), -product.getCount(), product.version, product.wasCreated, false);
                 }
+                System.out.println("PRODUCTif = " + product.id);
             }else{
                 Product product = new Product(name);
                 User.db.insertProduct(0, product.getName(), 0, 0, 0, true, false);
+                System.out.println("PRODUCTelse = " + product.id);
             }
-
             finish();
         }
     }

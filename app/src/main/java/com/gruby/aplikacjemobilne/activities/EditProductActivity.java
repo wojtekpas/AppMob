@@ -40,26 +40,6 @@ public class EditProductActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.editproduct_layout);
-
-        usersLV = (ListView) findViewById(R.id.usersLV);
-
-        listItems = new ArrayList<>();
-        users = new ArrayList<>();
-
-        adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1,
-                listItems);
-
-        usersLV.setAdapter(adapter);
-
-        selectedUsers = new ArrayList<>();
-
-        users = User.db.getPossibleUsers();
-
-        for(User u: users){
-            listItems.add(u.login);
-        }
-
         chosenProductET = (EditText) findViewById(R.id.chosenProductET);
         curCountET = (EditText) findViewById(R.id.curCountET);
         diffCountET  = (EditText) findViewById(R.id.diffCountET);
@@ -77,6 +57,25 @@ public class EditProductActivity extends Activity {
         curCountET.setText("" + product.getCurrentCount());
         chosenProductET.setEnabled(false);
         curCountET.setEnabled(false);
+
+        usersLV = (ListView) findViewById(R.id.usersLV);
+
+        listItems = new ArrayList<>();
+        users = new ArrayList<>();
+
+        adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_list_item_1,
+                listItems);
+
+        usersLV.setAdapter(adapter);
+
+        selectedUsers = new ArrayList<>();
+        System.out.println("product: " + product + " id: " + product.id + " name: " + product.getName());
+        users = User.db.getPossibleUsers(product);
+
+        for(User u: users){
+            listItems.add(u.login);
+        }
 
         updateBt.setOnClickListener(new View.OnClickListener() {
             @Override
