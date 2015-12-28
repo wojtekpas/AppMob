@@ -34,6 +34,8 @@ public class EditProductActivity extends Activity {
     ArrayList<User> users;
     ArrayList<User> selectedUsers;
 
+    public static final String token = "---";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +54,7 @@ public class EditProductActivity extends Activity {
 
         selectedUsers = new ArrayList<>();
 
-        users = User.db.getUsers();
+        users = User.db.getPossibleUsers();
 
         for(User u: users){
             listItems.add(u.login);
@@ -98,8 +100,7 @@ public class EditProductActivity extends Activity {
         usersLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                User u = users.get(position);
-                SelectUser(u);
+                SelectUser(position);
             }
         });
     }
@@ -114,6 +115,11 @@ public class EditProductActivity extends Activity {
         product.uploadDiff(diff);
 
         User.db.updateProduct(product);
+
+        for(User u: selectedUsers){
+            User.db.insertShares(product, u);
+        }
+
         finish();
     }
 
@@ -123,11 +129,17 @@ public class EditProductActivity extends Activity {
         finish();
     }
 
-    public void SelectUser(User u){
+    public void SelectUser(int position){
+        User u = users.get(position);
+
         if(selectedUsers.contains(u)){
+            listItems.set(position, u.login);
             selectedUsers.remove(u);
         } else {
+            listItems.set(position, token + u.login + token);
             selectedUsers.add(u);
         }
+
+        adapter.notifyDataSetChanged();
     }
 }

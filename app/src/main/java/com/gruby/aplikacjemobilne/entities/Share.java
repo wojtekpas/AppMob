@@ -18,5 +18,10 @@ public class Share {
         this.id = id;
         product = User.db.getProduct(product_id);
         user = User.db.getUser(user_id);
+        System.out.println("id = " + id);
+        System.out.println(product_id);
+        System.out.println(user_id);
+        System.out.println(product.id);
+        System.out.println(user.id);
     }
 }

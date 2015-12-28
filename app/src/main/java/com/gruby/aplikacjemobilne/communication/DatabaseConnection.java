@@ -15,7 +15,7 @@ import java.util.Random;
 
 public class DatabaseConnection extends SQLiteOpenHelper {
 
-    public static final String DATABASE_NAME = "MyDbver22.db";
+    public static final String DATABASE_NAME = "MyDbver23.db";
 
     public static final String USERS_TABLE_NAME = "users";
     public static final String USERS_COLUMN_ID = "id";
@@ -300,15 +300,42 @@ public class DatabaseConnection extends SQLiteOpenHelper {
     public ArrayList<Share> getSharesList(ArrayList<Product> products) {
 
         ArrayList<Share> shares = new ArrayList<>();
-
+        System.out.println("1");
         for(Share s: getSharesList()){
+            System.out.println("2");
             for(Product p: products){
+                System.out.println("3");
                 if(s.product.id == p.id && shares.contains(s) == false)
                     shares.add(s);
             }
         }
 
         return shares;
+    }
+
+    public ArrayList<User> getPossibleUsers(){
+        ArrayList<User> users = getUsers();
+        ArrayList<Share> shares = getSharesList(getProductsList());
+
+        for(User u: users) {
+            System.out.println(u.login);
+            for(Share s: shares){
+                System.out.println("   :" + s.user.login);
+                if (s.user.id == u.id){
+                    if(users.contains(u)){
+                        users.remove(u);
+                    }
+                }
+            }
+
+            if(User.loggedUser.id == u.id) {
+                if (users.contains(u)) {
+                    users.remove(u);
+                }
+            }
+        }
+
+        return users;
     }
 
     public ArrayList<Product> getProductsList()
