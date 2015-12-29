@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 
 public class Client extends AsyncTask<String, Void, String> {
 
@@ -43,6 +42,11 @@ public class Client extends AsyncTask<String, Void, String> {
     public void ProductsListRequestGet()
     {
         connection = MyConnection.ProductsListRequestGet(User.token);
+    }
+
+    public void ProductsListRequestShare(String product, int user_id, int version)
+    {
+        connection = MyConnection.ProductRequestShare(User.token, product, user_id, version);
     }
 
     public void ProductRequestPut(String product, int diff, int version)
