@@ -13,6 +13,7 @@ import com.gruby.aplikacjemobilne.communication.Client;
 import com.gruby.aplikacjemobilne.entities.Product;
 import com.gruby.aplikacjemobilne.R;
 import com.gruby.aplikacjemobilne.communication.ResponseListener;
+import com.gruby.aplikacjemobilne.entities.Share;
 import com.gruby.aplikacjemobilne.entities.User;
 
 import java.util.ArrayList;
@@ -80,7 +81,6 @@ public class ProductActivity extends Activity implements ResponseListener {
         });
 
         RefreshProductsList();
-        User.db.printTables();
     }
 
     public void RefreshProductsList()
@@ -101,6 +101,7 @@ public class ProductActivity extends Activity implements ResponseListener {
         for(Product p: products) {
             adapter.add("id - " + p.id + " - " + p.getName() + " - " + p.getCurrentCount());
         }
+
         adapter.notifyDataSetChanged();
     }
 
@@ -126,6 +127,10 @@ public class ProductActivity extends Activity implements ResponseListener {
         numberOfProducts = User.db.getProductsListForLoggedUser().size();
         numberOfSyncProducts = 0;
 
+        ArrayList<Share> newSharesListForLoggedUser = User.db.getNewSharesListForLoggedUser();
+
+        numberOfProducts += newSharesListForLoggedUser.size();
+
         if(numberOfProducts == 0) {
             DownloadDuringSync();
             return;
@@ -144,6 +149,12 @@ public class ProductActivity extends Activity implements ResponseListener {
                 User.client.ProductRequestPut(p.getName(), p.getDiff(), p.version);
                 User.client.execute();
             }
+        }
+
+        for(Share s: newSharesListForLoggedUser){
+            User.client = new Client(this, s.product);
+            User.client.ProductRequestShare(s.product.getName(),s.user.login, s.product.version);
+            User.client.execute();
         }
 
         if(numberOfSyncProducts == numberOfProducts){
@@ -188,6 +199,9 @@ public class ProductActivity extends Activity implements ResponseListener {
             for (Product p : productsOnServer) {
                 if(p.wasRemoved == false) {
                     User.db.insertProduct(p);
+                    Product tmpProduct = User.db.getProduct(p.getName());
+                    p.id = tmpProduct.id;
+                    p.insertShares();
                 }
             }
         }

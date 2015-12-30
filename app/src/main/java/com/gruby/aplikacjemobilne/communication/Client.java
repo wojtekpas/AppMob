@@ -44,9 +44,9 @@ public class Client extends AsyncTask<String, Void, String> {
         connection = MyConnection.ProductsListRequestGet(User.token);
     }
 
-    public void ProductsListRequestShare(String product, int user_id, int version)
+    public void ProductRequestShare(String product, String u_login, int version)
     {
-        connection = MyConnection.ProductRequestShare(User.token, product, user_id, version);
+        connection = MyConnection.ProductRequestShare(User.token, product, u_login, version);
     }
 
     public void ProductRequestPut(String product, int diff, int version)

@@ -42,7 +42,7 @@ def create_if_product_doesnt_exist(token_id, product_id):
     	    'diffs': { 1: 'created' },
             'wasRemoved': 'false',
             'shares': {},
-            'owner': TOKENS[token_id][1]
+            'owner': TOKENS[token_id][0]
             }
 
 def generate_token():
@@ -122,7 +122,7 @@ class product_with_count(Resource):
             if int(ver) < get_list_of_products_for_user(user_id)[product_id]['vers'][TOKENS[token_id][1]] and c != 'created' and c != 'removed':
                 count = int(int(count)-int(c))
             elif c == 'removed':
-                get_list_of_products_for_user(user_id)[product_id]['owner'] = TOKENS[token_id][1]
+                get_list_of_products_for_user(user_id)[product_id]['owner'] = TOKENS[token_id][0]
         if(count < 0):
             count = 0
         cur_ver = cur_ver + 1
@@ -172,7 +172,7 @@ api.add_resource(user, '/users/<user_id>/password/<password_value>/devices/<devi
 api.add_resource(list_of_products, '/token/<token_id>/products')
 api.add_resource(product, '/token/<token_id>/products/<product_id>')
 api.add_resource(product_with_count, '/token/<token_id>/products/<product_id>/diff/<value>/version/<ver>')
-api.add_resource(share, '/token/<token_id>/products/<product_id>/share/<u_id>/version/<ver>')
+api.add_resource(share, '/token/<token_id>/products/<product_id>/shares/<u_id>/version/<ver>')
 api.add_resource(print_users, '/print_users');
 api.add_resource(print_tokens, '/print_tokens');
 

@@ -12,7 +12,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.gruby.aplikacjemobilne.R;
-import com.gruby.aplikacjemobilne.communication.Client;
 import com.gruby.aplikacjemobilne.communication.DatabaseConnection;
 import com.gruby.aplikacjemobilne.communication.ResponseListener;
 import com.gruby.aplikacjemobilne.entities.Product;
@@ -117,7 +116,7 @@ public class LoginActivity extends Activity implements ResponseListener {
             }
 
             User.loggedUser = User.db.getUser(login);
-
+            infoTV.setText("");
             startProductActivity();
         }else{
             infoTV.setText("nieudane logowanie");

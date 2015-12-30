@@ -43,12 +43,12 @@ public class MyConnection {
         }
     }
 
-    public static HttpURLConnection ProductRequestShare(String token, String id, int user_id, int version)
+    public static HttpURLConnection ProductRequestShare(String token, String id, String u_login, int version)
     {
         try{
-            URL url = new URL(baseUrl+token+"/products/"+id+"/share/"+user_id+"/version/"+version);
+            URL url = new URL(baseUrl+token+"/products/"+id+"/shares/"+u_login+"/version/"+version);
             HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-            connection.setRequestMethod("PUT");
+            connection.setRequestMethod("GET");
             return connection;
         }
         catch(Exception e){

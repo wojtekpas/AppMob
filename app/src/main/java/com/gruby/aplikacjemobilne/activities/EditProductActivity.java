@@ -115,7 +115,7 @@ public class EditProductActivity extends Activity {
         User.db.updateProduct(product);
 
         for(User u: selectedUsers){
-            User.db.insertShares(product, u);
+            User.db.insertShares(product, u, true);
         }
 
         finish();

@@ -15,7 +15,7 @@ import java.util.Random;
 
 public class DatabaseConnection extends SQLiteOpenHelper {
 
-    public static final String DATABASE_NAME = "MyDbver208.db";
+    public static final String DATABASE_NAME = "MyDbver212.db";
 
     public static final String USERS_TABLE_NAME = "users";
     public static final String USERS_COLUMN_ID = "id";
@@ -38,6 +38,7 @@ public class DatabaseConnection extends SQLiteOpenHelper {
     public static final String SHARES_COLUMN_ID = "id";
     public static final String SHARES_COLUMN_PRODUCT_ID = "product_id";
     public static final String SHARES_COLUMN_USER_ID = "user_id";
+    public static final String SHARES_COLUMN_IS_NEW = "is_new";
 
     public DatabaseConnection(Context context)
     {
@@ -70,7 +71,8 @@ public class DatabaseConnection extends SQLiteOpenHelper {
                 "create table " + SHARES_TABLE_NAME +
                         "( " + SHARES_COLUMN_ID + " integer primary key," +
                         SHARES_COLUMN_PRODUCT_ID + " integer," +
-                        SHARES_COLUMN_USER_ID + " integer)"
+                        SHARES_COLUMN_USER_ID + " integer," +
+                        SHARES_COLUMN_IS_NEW + " text)"
         );
     }
 
@@ -132,14 +134,14 @@ public class DatabaseConnection extends SQLiteOpenHelper {
         db.insert(PRODUCTS_TABLE_NAME, null, contentValues);
     }
 
-    public void insertShares (Product product, User user) {
+    public void insertShares (Product product, User user, boolean isNew) {
         if(product == null || user == null)
             return;
 
-        insertShares(0, product.id, user.id);
+        insertShares(0, product.id, user.id, isNew);
     }
 
-    public void insertShares (int id, int product_id, int user_id) {
+    public void insertShares (int id, int product_id, int user_id, boolean isNew) {
         if(id == 0)
             id = getMaxSharesId() + 1;
 
@@ -148,6 +150,7 @@ public class DatabaseConnection extends SQLiteOpenHelper {
         contentValues.put(SHARES_COLUMN_ID, id);
         contentValues.put(SHARES_COLUMN_PRODUCT_ID, product_id);
         contentValues.put(SHARES_COLUMN_USER_ID, user_id);
+        contentValues.put(SHARES_COLUMN_IS_NEW, convertBToS(isNew));
         db.insert(SHARES_TABLE_NAME, null, contentValues);
     }
 
@@ -295,8 +298,9 @@ public class DatabaseConnection extends SQLiteOpenHelper {
             int id = Integer.parseInt(res.getString(res.getColumnIndex(SHARES_COLUMN_ID)));
             int pid = Integer.parseInt(res.getString(res.getColumnIndex(SHARES_COLUMN_PRODUCT_ID)));
             int uid = Integer.parseInt(res.getString(res.getColumnIndex(SHARES_COLUMN_USER_ID)));
+            boolean isNew = convertSToB(res.getString(res.getColumnIndex(SHARES_COLUMN_IS_NEW)));
 
-            s = new Share(id, pid, uid);
+            s = new Share(id, pid, uid, isNew);
             sharesList.add(s);
             res.moveToNext();
         }
@@ -398,6 +402,19 @@ public class DatabaseConnection extends SQLiteOpenHelper {
             res.moveToNext();
         }
         return productsList;
+    }
+
+    public ArrayList<Share> getNewSharesListForLoggedUser()
+    {;
+        ArrayList<Share> newSharesList = new ArrayList<>();
+
+        for(Product p: getProductsListForLoggedUser()){
+            for(Share s: getSharesList(p)){
+                if(s.isNew)
+                    newSharesList.add(s);
+            }
+        }
+        return newSharesList;
     }
 
     public Product getProduct(int id){

@@ -1,11 +1,9 @@
 package com.gruby.aplikacjemobilne.entities;
 
 import android.content.Intent;
-import android.provider.ContactsContract;
 
 import com.gruby.aplikacjemobilne.communication.DatabaseConnection;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -22,6 +20,7 @@ public class Product {
     public User user;
     public boolean wasCreated = false;
     public boolean wasRemoved = false;
+    public ArrayList<String> shares = new ArrayList<>();
 
     public Product() {
     }
@@ -137,6 +136,12 @@ public class Product {
                 i = Integer.parseInt(s);
                 p.version = Integer.valueOf(i);
 
+                System.out.println(jProduct.get("shares").toString());
+
+                String shares = jProduct.get("shares").toString();
+
+                p.shares = Share.Deserialize(shares);
+
                 s = (String) jProduct.get("wasRemoved");
 
                 p.wasRemoved = DatabaseConnection.convertSToB(s);
@@ -148,6 +153,16 @@ public class Product {
         }catch(Exception ex) {
             ex.printStackTrace();
             return new ArrayList<>();
+        }
+    }
+
+    public void insertShares(){
+        if(id == 0)
+            System.out.println("WARNING: product id = 0");
+
+        for (String s_login: shares){
+            User u = User.db.getUser(s_login);
+            User.db.insertShares(this, u, false);
         }
     }
 }
