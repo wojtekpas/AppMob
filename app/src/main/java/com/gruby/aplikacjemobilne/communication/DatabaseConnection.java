@@ -15,7 +15,7 @@ import java.util.Random;
 
 public class DatabaseConnection extends SQLiteOpenHelper {
 
-    public static final String DATABASE_NAME = "MyDbver212.db";
+    public static final String DATABASE_NAME = "MyDbver214.db";
 
     public static final String USERS_TABLE_NAME = "users";
     public static final String USERS_COLUMN_ID = "id";

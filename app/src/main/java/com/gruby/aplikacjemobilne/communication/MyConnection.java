@@ -28,6 +28,21 @@ public class MyConnection {
         }
     }
 
+    public static HttpURLConnection UsersListRequestGet(String token)
+    {
+        try{
+            URL url = new URL(baseUrl+token+"/users");
+            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+            connection.setRequestMethod("GET");
+
+            return connection;
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public static HttpURLConnection ProductsListRequestGet(String token)
     {
         try{

@@ -158,7 +158,7 @@ public class ProductActivity extends Activity implements ResponseListener {
         }
 
         if(numberOfSyncProducts == numberOfProducts){
-            DownloadDuringSync();
+            UsersDownload();
             return;
         }
     }
@@ -181,6 +181,13 @@ public class ProductActivity extends Activity implements ResponseListener {
         finish();
     }
 
+    private void UsersDownload()
+    {
+        User.client = new Client(this);
+        User.client.UsersListRequestGet();
+        User.client.execute();
+    }
+
     @Override
     public void onResponse(String data) {
         numberOfSyncProducts++;
@@ -188,11 +195,15 @@ public class ProductActivity extends Activity implements ResponseListener {
             return;
         }
         if(numberOfSyncProducts == numberOfProducts){
+            UsersDownload();
+            return;
+        }
+        if(numberOfSyncProducts == numberOfProducts + 1){
+            User.Insert(data);
             DownloadDuringSync();
             return;
         }
 
-        //System.out.println(data);
         ArrayList<Product> productsOnServer = Product.Deserialize(data);
         products = new ArrayList<>();
         if(productsOnServer.size() > 0) {

@@ -39,6 +39,11 @@ public class Client extends AsyncTask<String, Void, String> {
         connection = MyConnection.TokenRequestGet(login, password, device_id);
     }
 
+    public void UsersListRequestGet()
+    {
+        connection = MyConnection.UsersListRequestGet(User.token);
+    }
+
     public void ProductsListRequestGet()
     {
         connection = MyConnection.ProductsListRequestGet(User.token);

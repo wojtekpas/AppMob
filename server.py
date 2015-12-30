@@ -51,6 +51,14 @@ def generate_token():
         token = token + random.choice(string.ascii_lowercase)
     return token
 
+class list_of_users(Resource):
+    def get(self, token_id):
+        abort_if_token_doesnt_exist(token_id)
+        usersList = {}
+        for u in USERS:
+            usersList[u] = USERS[u]['password']
+        return usersList, 200
+
 class user(Resource):
     def get(self, user_id, password_value, device_id):
         if user_id in USERS:
@@ -168,6 +176,7 @@ class print_tokens(Resource):
 ## Actually setup the Api resource routing here
 ##
 
+api.add_resource(list_of_users, '/token/<token_id>/users')
 api.add_resource(user, '/users/<user_id>/password/<password_value>/devices/<device_id>')
 api.add_resource(list_of_products, '/token/<token_id>/products')
 api.add_resource(product, '/token/<token_id>/products/<product_id>')
