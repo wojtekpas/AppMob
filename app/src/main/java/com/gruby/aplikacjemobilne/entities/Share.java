@@ -20,16 +20,10 @@ public class Share {
         product = User.db.getProduct(product_id);
         user = User.db.getUser(user_id);
         this.isNew = isNew;
-        System.out.println("konstruktor\nid = " + id);
-        System.out.println(product_id);
-        System.out.println(user_id);
-        System.out.println(product.id);
-        System.out.println(user.id);
     }
 
     public static ArrayList<String> Deserialize(String json) throws JSONException {
         JSONObject jObject = new JSONObject(json.substring(json.indexOf("{"), json.lastIndexOf("}") + 1));
-        System.out.println(jObject.toString());
         Iterator<String> iterator = jObject.keys();
         ArrayList<String> jShares = new ArrayList<>();
 

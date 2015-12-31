@@ -132,7 +132,7 @@ public class ProductActivity extends Activity implements ResponseListener {
         numberOfProducts += newSharesListForLoggedUser.size();
 
         if(numberOfProducts == 0) {
-            DownloadDuringSync();
+            UsersDownload();
             return;
         }
 
@@ -157,7 +157,7 @@ public class ProductActivity extends Activity implements ResponseListener {
             User.client.execute();
         }
 
-        if(numberOfSyncProducts == numberOfProducts){
+        if(numberOfProducts == numberOfSyncProducts) {
             UsersDownload();
             return;
         }
@@ -169,7 +169,6 @@ public class ProductActivity extends Activity implements ResponseListener {
                 User.db.deleteProduct(p);
             }
         }
-
         User.client = new Client(this);
         User.client.ProductsListRequestGet();
         User.client.execute();

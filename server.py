@@ -39,10 +39,10 @@ def create_if_product_doesnt_exist(token_id, product_id):
             'count': 0,
             'version': 1,
     	    'vers': { TOKENS[token_id][1]: 1},
-    	    'diffs': { 1: 'created' },
+    	    'diffs': { 0: 0,
+                   1: 'created' },
             'wasRemoved': 'false',
-            'shares': {},
-            'owner': TOKENS[token_id][0]
+            'shares': {TOKENS[token_id][0]: 'true'},
             }
 
 def generate_token():
@@ -85,11 +85,27 @@ class list_of_products(Resource):
     def get(self, token_id):
         abort_if_token_doesnt_exist(token_id)
         user_id = TOKENS[token_id][0]
+        for product_id in get_list_of_products_for_user(user_id):
+            print(product_id)
+            print(get_list_of_products_for_user(user_id)[product_id])
+            if TOKENS[token_id][1] not in get_list_of_products_for_user(user_id)[product_id]['vers']:
+                get_list_of_products_for_user(user_id)[product_id]['vers'][TOKENS[token_id][1]] = get_list_of_products_for_user(user_id)[product_id]['version']
+            if get_list_of_products_for_user(user_id)[product_id]['diffs'][get_list_of_products_for_user(user_id)[product_id]['version']] == 'removed':
+                get_list_of_products_for_user(user_id)[product_id]['vers'][TOKENS[token_id][1]] = get_list_of_products_for_user(user_id)[product_id]['version']
+            if get_list_of_products_for_user(user_id)[product_id]['vers'][TOKENS[token_id][1]] == 'removed':
+                for k in get_list_of_products_for_user(user_id)[product_id]['vers']:
+                    v = get_list_of_products_for_user(user_id)[product_id]['vers'][k]
+                    if get_list_of_products_for_user(user_id)[product_id]['diffs'][v] != 'removed':
+                        isNotRemoved = isNotRemoved + 1
+                if isNotRemoved == 0:
+                    for u_id in get_list_of_products_for_user(user_id)[product_id]['shares']:
+                        del get_list_of_products_for_user(u_id)[product_id]
+                    del get_list_of_products_for_user(user_id)[product_id]
         return get_list_of_products_for_user(user_id), 200
 
 class product(Resource):
     def get(self, token_id, product_id):
-        abort_if_token_doesnt_exist(token_id)      
+        abort_if_token_doesnt_exist(token_id)
         user_id = TOKENS[token_id][0]
         abort_if_user_doesnt_exist(user_id)
         abort_if_product_doesnt_exist(user_id, product_id)
@@ -101,15 +117,27 @@ class product(Resource):
         if product_id not in get_list_of_products_for_user(user_id):
             return '', 200
 
+        isNotRemoved = 0;
+
+        for k in get_list_of_products_for_user(user_id)[product_id]['vers']:
+            v = get_list_of_products_for_user(user_id)[product_id]['vers'][k]
+            if get_list_of_products_for_user(user_id)[product_id]['diffs'][v] != 'removed':
+                isNotRemoved = isNotRemoved + 1
+
+        if isNotRemoved == 0:
+            for u_id in get_list_of_products_for_user(user_id)[product_id]['shares']:
+                del get_list_of_products_for_user(u_id)[product_id]
+            del get_list_of_products_for_user(user_id)[product_id]
+            return '', 200
+
+
         cur_ver = get_list_of_products_for_user(user_id)[product_id]['version'] + 1
 
         get_list_of_products_for_user(user_id)[product_id]['count'] = 0
         get_list_of_products_for_user(user_id)[product_id]['version'] = cur_ver
         get_list_of_products_for_user(user_id)[product_id]['wasRemoved'] = 'true'
         get_list_of_products_for_user(user_id)[product_id]['vers'][TOKENS[token_id][1]] = cur_ver
-        get_list_of_products_for_user(user_id)[product_id]['shares'] = {}
         get_list_of_products_for_user(user_id)[product_id]['diffs'][cur_ver] = 'removed'
-        get_list_of_products_for_user(user_id)[product_id]['owner'] = 'warning'
 
         for u_id in get_list_of_products_for_user(user_id)[product_id]['shares']:
             get_list_of_products_for_user(u_id)[product_id] = get_list_of_products_for_user(user_id)[product_id]
@@ -125,12 +153,12 @@ class product_with_count(Resource):
         count = get_list_of_products_for_user(user_id)[product_id]['count']
         count = int(int(count)+int(value))
         cur_ver = get_list_of_products_for_user(user_id)[product_id]['version']
-        if TOKENS[token_id][1] in get_list_of_products_for_user(user_id)[product_id]['vers']:
+        if TOKENS[token_id][1] in get_list_of_products_for_user(user_id)[product_id]['vers'] and cur_ver in get_list_of_products_for_user(user_id)[product_id]['diffs']:
             c = get_list_of_products_for_user(user_id)[product_id]['diffs'][cur_ver]
             if int(ver) < get_list_of_products_for_user(user_id)[product_id]['vers'][TOKENS[token_id][1]] and c != 'created' and c != 'removed':
                 count = int(int(count)-int(c))
             elif c == 'removed':
-                get_list_of_products_for_user(user_id)[product_id]['owner'] = TOKENS[token_id][0]
+                get_list_of_products_for_user(user_id)[product_id]['shares'][TOKENS[token_id][0]] = 'true'
         if(count < 0):
             count = 0
         cur_ver = cur_ver + 1
@@ -138,7 +166,7 @@ class product_with_count(Resource):
         get_list_of_products_for_user(user_id)[product_id]['version'] = cur_ver
         get_list_of_products_for_user(user_id)[product_id]['wasRemoved'] = 'false'
         get_list_of_products_for_user(user_id)[product_id]['vers'][TOKENS[token_id][1]] = cur_ver
-        get_list_of_products_for_user(user_id)[product_id]['diffs'][cur_ver] = 'removed'
+        get_list_of_products_for_user(user_id)[product_id]['diffs'][cur_ver] = str(count)
 
         for u_id in get_list_of_products_for_user(user_id)[product_id]['shares']:
             get_list_of_products_for_user(u_id)[product_id] = get_list_of_products_for_user(user_id)[product_id]
@@ -153,8 +181,10 @@ class share(Resource):
         abort_if_product_doesnt_exist(user_id, product_id)
         abort_if_user_doesnt_exist(u_id)
 
+        if product_id in USERS[u_id]['products']:
+            return '', 200
+
         cur_ver = get_list_of_products_for_user(user_id)[product_id]['version']
-        cur_ver = cur_ver + 1
 
         get_list_of_products_for_user(user_id)[product_id]['version'] = cur_ver
         get_list_of_products_for_user(user_id)[product_id]['shares'][u_id] = 'true'
