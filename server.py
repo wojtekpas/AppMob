@@ -86,13 +86,12 @@ class list_of_products(Resource):
         abort_if_token_doesnt_exist(token_id)
         user_id = TOKENS[token_id][0]
         for product_id in get_list_of_products_for_user(user_id):
-            print(product_id)
-            print(get_list_of_products_for_user(user_id)[product_id])
             if TOKENS[token_id][1] not in get_list_of_products_for_user(user_id)[product_id]['vers']:
                 get_list_of_products_for_user(user_id)[product_id]['vers'][TOKENS[token_id][1]] = get_list_of_products_for_user(user_id)[product_id]['version']
             if get_list_of_products_for_user(user_id)[product_id]['diffs'][get_list_of_products_for_user(user_id)[product_id]['version']] == 'removed':
                 get_list_of_products_for_user(user_id)[product_id]['vers'][TOKENS[token_id][1]] = get_list_of_products_for_user(user_id)[product_id]['version']
-            if get_list_of_products_for_user(user_id)[product_id]['vers'][TOKENS[token_id][1]] == 'removed':
+            if get_list_of_products_for_user(user_id)[product_id]['diffs'][get_list_of_products_for_user(user_id)[product_id]['vers'][TOKENS[token_id][1]]] == 'removed':
+                isNotRemoved = 0
                 for k in get_list_of_products_for_user(user_id)[product_id]['vers']:
                     v = get_list_of_products_for_user(user_id)[product_id]['vers'][k]
                     if get_list_of_products_for_user(user_id)[product_id]['diffs'][v] != 'removed':
@@ -100,7 +99,6 @@ class list_of_products(Resource):
                 if isNotRemoved == 0:
                     for u_id in get_list_of_products_for_user(user_id)[product_id]['shares']:
                         del get_list_of_products_for_user(u_id)[product_id]
-                    del get_list_of_products_for_user(user_id)[product_id]
         return get_list_of_products_for_user(user_id), 200
 
 class product(Resource):
@@ -127,7 +125,6 @@ class product(Resource):
         if isNotRemoved == 0:
             for u_id in get_list_of_products_for_user(user_id)[product_id]['shares']:
                 del get_list_of_products_for_user(u_id)[product_id]
-            del get_list_of_products_for_user(user_id)[product_id]
             return '', 200
 
 
