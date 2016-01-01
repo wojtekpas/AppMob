@@ -99,7 +99,7 @@ public class ProductActivity extends Activity implements ResponseListener {
         adapter.clear();
 
         for(Product p: products) {
-            adapter.add("id - " + p.id + " - " + p.getName() + " - " + p.getCurrentCount());
+            adapter.add(p.getName() + " - " + p.getCurrentCount());
         }
 
         adapter.notifyDataSetChanged();

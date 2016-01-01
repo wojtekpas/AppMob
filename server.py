@@ -85,7 +85,10 @@ class list_of_products(Resource):
     def get(self, token_id):
         abort_if_token_doesnt_exist(token_id)
         user_id = TOKENS[token_id][0]
-        for product_id in get_list_of_products_for_user(user_id):
+        products_keys = []
+        for product_id in get_list_of_products_for_user(user_id).keys():
+            products_keys.append(product_id)
+        for product_id in products_keys:
             if TOKENS[token_id][1] not in get_list_of_products_for_user(user_id)[product_id]['vers']:
                 get_list_of_products_for_user(user_id)[product_id]['vers'][TOKENS[token_id][1]] = get_list_of_products_for_user(user_id)[product_id]['version']
             if get_list_of_products_for_user(user_id)[product_id]['diffs'][get_list_of_products_for_user(user_id)[product_id]['version']] == 'removed':
@@ -97,7 +100,10 @@ class list_of_products(Resource):
                     if get_list_of_products_for_user(user_id)[product_id]['diffs'][v] != 'removed':
                         isNotRemoved = isNotRemoved + 1
                 if isNotRemoved == 0:
-                    for u_id in get_list_of_products_for_user(user_id)[product_id]['shares']:
+                    keys = []
+                    for u_id in get_list_of_products_for_user(user_id)[product_id]['shares'].keys():
+                        keys.append(u_id)
+                    for u_id in keys:
                         del get_list_of_products_for_user(u_id)[product_id]
         return get_list_of_products_for_user(user_id), 200
 
@@ -115,7 +121,7 @@ class product(Resource):
         if product_id not in get_list_of_products_for_user(user_id):
             return '', 200
 
-        isNotRemoved = 0;
+        isNotRemoved = 0
 
         for k in get_list_of_products_for_user(user_id)[product_id]['vers']:
             v = get_list_of_products_for_user(user_id)[product_id]['vers'][k]
@@ -123,7 +129,10 @@ class product(Resource):
                 isNotRemoved = isNotRemoved + 1
 
         if isNotRemoved == 0:
-            for u_id in get_list_of_products_for_user(user_id)[product_id]['shares']:
+            keys = []
+            for u_id in get_list_of_products_for_user(user_id)[product_id]['shares'].keys():
+                keys.append(u_id)
+            for u_id in keys:
                 del get_list_of_products_for_user(u_id)[product_id]
             return '', 200
 
@@ -209,8 +218,8 @@ api.add_resource(list_of_products, '/token/<token_id>/products')
 api.add_resource(product, '/token/<token_id>/products/<product_id>')
 api.add_resource(product_with_count, '/token/<token_id>/products/<product_id>/diff/<value>/version/<ver>')
 api.add_resource(share, '/token/<token_id>/products/<product_id>/shares/<u_id>/version/<ver>')
-api.add_resource(print_users, '/print_users');
-api.add_resource(print_tokens, '/print_tokens');
+api.add_resource(print_users, '/print_users')
+api.add_resource(print_tokens, '/print_tokens')
 
 if __name__ == '__main__':
     app.run(debug=True)
